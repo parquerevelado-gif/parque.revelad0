@@ -5,14 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parque Revelado</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Estilo para el texto amarillo que agregamos */
+    .texto-superpuesto {
+      color: yellow;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    }
+  </style>
 </head>
 <body>
+  <h3 class="texto-superpuesto">[PRUEBA DESDE GOOGLE DOCS]</h3>
+
   <button id="borrar-recuerdos">Sumergir nuevamente</button>
+
   <div class="ripple-bg">
     <h1 class="titulo">Parque Revelado</h1>
     <p class="subtexto">Tocá el parque para revelar una memoria</p>
     <div id="recuerdos-container"></div>
   </div>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/sirxemic/jquery.ripples/dist/jquery.ripples-min.js"></script>
   <script src="script.js"></script>
