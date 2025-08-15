@@ -1,71 +1,68 @@
-const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSSez9h2cXtIeyHfzeUgHGkPYoM6CVPagA11PH39ZM4m7ieT5UwpXPuAKcM08OWYp1FDvSFKabR7na/pub?output=csv';
+const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRBo8Pv60vdGp_trawO9-sPbPqT-SAsdb29F7iPiHmvVvx62qpbNCzJxu4g4nZlNcpRv0A-fUvz5n4U/pub?gid=323684883&single=true&output=csv';
 
 $(document).ready(function () {
-  $('.ripple-bg').ripples({
+  const $fondo = $(".ripple-bg");
+  const $contenedor = $("#recuerdos-container");
+
+  // Iniciar en quieto
+  $fondo.ripples({
     resolution: 128,
-    perturbance: 0.03,
     dropRadius: 20,
+    perturbance: 0,
     interactive: true
   });
 
-  let fotos = [];
-  let fotosDisponibles = [];
+  let fadeTimer;
 
-  function limpiarLista(lista) {
-    const set = new Set();
-    lista.forEach(item => {
-      const trimmed = item.trim();
-      if(trimmed) set.add(trimmed);
-    });
-    return Array.from(set);
-  }
+  function activarMovimiento() {
+    clearTimeout(fadeTimer);
+    $fondo.ripples('set', 'perturbance', 0.015);
 
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
+    fadeTimer = setTimeout(() => {
+      let steps = 14;
+      let interval = 350;
+      let actual = 0;
 
-  function resetFotosDisponibles() {
-    fotosDisponibles = [...fotos];
-    shuffleArray(fotosDisponibles);
-    console.log('Fotos disponibles reseteadas, total:', fotosDisponibles.length);
+      const fade = setInterval(() => {
+        let value = 0.015 - (0.015 / steps) * actual;
+        $fondo.ripples('set', 'perturbance', Math.max(0, value));
+        actual++;
+        if (actual > steps) clearInterval(fade);
+      }, interval);
+    }, 2000);
   }
 
   fetch(urlCSV)
     .then(res => res.text())
     .then(csvText => {
-      fotos = limpiarLista(csvText.split('\n'));
-      resetFotosDisponibles();
-
-      const $contenedor = $("#recuerdos-container");
-      const $fondo = $(".ripple-bg");
+      const fotos = csvText.trim().split('\n');
 
       $fondo.on("click", function (e) {
-        if(fotosDisponibles.length === 0) {
-          resetFotosDisponibles();
-          console.log('Lista vacía, reseteando...');
-        }
-
-        const imgSrc = fotosDisponibles.shift();
-        console.log('Mostrando imagen:', imgSrc, 'quedan', fotosDisponibles.length);
+        activarMovimiento();
 
         const img = $("<img>")
           .addClass("recuerdo-img")
-          .attr("src", imgSrc)
+          .attr("src", fotos[Math.floor(Math.random() * fotos.length)])
           .css({
             left: e.clientX - 100 + "px",
-            top: e.clientY - 75 + "px",
-            position: "absolute",
-            pointerEvents: "none",
-            zIndex: 2
+            top: e.clientY - 75 + "px"
           });
+
         $contenedor.append(img);
       });
 
+      $fondo.on("mousemove", activarMovimiento);
+
       $("#borrar-recuerdos").on("click", function () {
-        $contenedor.empty();
+        $(".recuerdo-img").each(function () {
+          const $img = $(this);
+          $img.addClass("fade-out");
+
+          // Eliminar luego de la animación de salida
+          setTimeout(() => {
+            $img.remove();
+          }, 1000);
+        });
       });
     })
     .catch(err => {
