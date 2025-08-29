@@ -63,7 +63,7 @@ html, body {
   }
 }
 
-/* --- BOTÓN SUMERGIR (GLASS ORIGINAL, TEXTO NEGRO, SIN BORDE) --- */
+/* --- BOTÓN SUMERGIR (GLASS ORIGINAL, TEXTO BLANCO, SIN BORDE) --- */
 #borrar-recuerdos {
   position: absolute;
   top: 80%;
@@ -74,7 +74,7 @@ html, body {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border-radius: 16px; /* bordes normales */
-  color: #fff; /* texto negro */
+  color: #fff; /* texto blanco */
   font-family: 'Montserrat', sans-serif;
   font-weight: 300; /* regular */
   font-size: 1rem;
@@ -95,6 +95,20 @@ html, body {
     background-image: url('https://i.imgur.com/rEAY2CH.jpeg');
     background-position: center top;
   }
+
+  .recuerdo-img {
+    max-width: 150px;
+    max-height: 150px;
+  }
+
+  #borrar-recuerdos {
+    top: 75%; /* subido un poquito */
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    backdrop-filter: blur(3px); /* blur más sutil en mobile */
+    -webkit-backdrop-filter: blur(3px);
+  }
 }
+
 
 
