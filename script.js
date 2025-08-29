@@ -4,6 +4,12 @@ $(document).ready(function () {
   const $fondo = $(".ripple-bg");
   const $contenedor = $("#recuerdos-container");
 
+  // --- Imagen de fondo móvil nítida ---
+  const $mobileBg = $("<img>")
+    .addClass("ripple-bg-mobile")
+    .attr("src", "https://i.imgur.com/RBqabsi.jpeg"); // versión móvil 1800px
+  $fondo.append($mobileBg);
+
   // Iniciar efecto ripple en quieto
   $fondo.ripples({
     resolution: 128,
@@ -36,7 +42,6 @@ $(document).ready(function () {
   fetch(urlCSV)
     .then(res => res.text())
     .then(csvText => {
-      // Cada fila del CSV es una URL de imagen
       const fotos = csvText.trim().split('\n');
 
       // Pool barajado de imágenes
@@ -49,7 +54,7 @@ $(document).ready(function () {
         return pool.pop();
       }
 
-      // Al hacer click en el fondo -> aparece imagen
+      // Click en el fondo -> aparece imagen
       $fondo.on("click", function (e) {
         activarMovimiento();
 
@@ -75,13 +80,12 @@ $(document).ready(function () {
           const $img = $(this);
           $img.addClass("fade-out");
 
-          // Eliminar luego de la animación
           setTimeout(() => {
             $img.remove();
           }, 1000);
         });
 
-        // Reiniciar el pool para nueva ronda
+        // Reiniciar pool
         pool = fotos.slice().sort(() => Math.random() - 0.5);
       });
     })
@@ -89,4 +93,5 @@ $(document).ready(function () {
       console.error("Error al cargar las fotos:", err);
     });
 });
+
 
