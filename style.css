@@ -12,7 +12,7 @@ html, body {
 .ripple-bg {
   width: 100vw;
   height: 100vh;
-  background-image: url('https://i.imgur.com/rEAY2CH.jpeg');
+  background-image: url('https://i.imgur.com/rEAY2CH.jpeg'); /* versión desktop */
   background-size: cover;
   background-position: center;
   position: relative;
@@ -92,7 +92,8 @@ html, body {
 /* --- VERSIÓN MÓVIL --- */
 @media (max-width: 768px) {
   .ripple-bg {
-    background-image: url('https://i.imgur.com/rEAY2CH.jpeg');
+    background-image: url('https://i.imgur.com/0Y4iNGy.jpeg'); /* versión móvil optimizada */
+    background-size: cover;
     background-position: center top;
   }
 
@@ -109,6 +110,7 @@ html, body {
     -webkit-backdrop-filter: blur(3px);
   }
 }
+
 
 
 
