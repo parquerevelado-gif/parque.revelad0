@@ -4,15 +4,9 @@ $(document).ready(function () {
   const $fondo = $(".ripple-bg");
   const $contenedor = $("#recuerdos-container");
 
-  // --- Imagen de fondo móvil nítida ---
-  const $mobileBg = $("<img>")
-    .addClass("ripple-bg-mobile")
-    .attr("src", "https://i.imgur.com/RBqabsi.jpeg"); // versión móvil 1800px
-  $fondo.append($mobileBg);
-
   // Iniciar efecto ripple en quieto
   $fondo.ripples({
-    resolution: 128,
+    resolution: 128, // podés subir a 256 o 512 si la carga lo permite
     dropRadius: 20,
     perturbance: 0,
     interactive: true
@@ -43,8 +37,6 @@ $(document).ready(function () {
     .then(res => res.text())
     .then(csvText => {
       const fotos = csvText.trim().split('\n');
-
-      // Pool barajado de imágenes
       let pool = fotos.slice().sort(() => Math.random() - 0.5);
 
       function siguienteFoto() {
@@ -54,12 +46,9 @@ $(document).ready(function () {
         return pool.pop();
       }
 
-      // Click en el fondo -> aparece imagen
       $fondo.on("click", function (e) {
         activarMovimiento();
-
         const nextFoto = siguienteFoto();
-
         const img = $("<img>")
           .addClass("recuerdo-img")
           .attr("src", nextFoto)
@@ -67,31 +56,22 @@ $(document).ready(function () {
             left: e.clientX - 100 + "px",
             top: e.clientY - 75 + "px"
           });
-
         $contenedor.append(img);
       });
 
-      // Movimiento activa el ripple
       $fondo.on("mousemove", activarMovimiento);
 
-      // Botón para borrar recuerdos
       $("#borrar-recuerdos").on("click", function () {
         $(".recuerdo-img").each(function () {
           const $img = $(this);
           $img.addClass("fade-out");
-
-          setTimeout(() => {
-            $img.remove();
-          }, 1000);
+          setTimeout(() => { $img.remove(); }, 1000);
         });
-
-        // Reiniciar pool
         pool = fotos.slice().sort(() => Math.random() - 0.5);
       });
     })
-    .catch(err => {
-      console.error("Error al cargar las fotos:", err);
-    });
+    .catch(err => console.error("Error al cargar las fotos:", err));
 });
+
 
 
