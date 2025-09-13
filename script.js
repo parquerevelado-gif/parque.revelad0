@@ -4,19 +4,22 @@ $(document).ready(function () {
   const $fondo = $(".ripple-bg");
   const $contenedor = $("#recuerdos-container");
 
-  // Iniciar efecto ripple en quieto
-  $fondo.ripples({
-    resolution: 128, // podés subir a 256 o 512 si la carga lo permite
-    dropRadius: 20,
-    perturbance: 0,
-    interactive: true
-  });
+  // Detectar móvil
+  const isMobile = window.innerWidth <= 768;
+
+  // Configuración de ripples según dispositivo
+  const rippleOptions = isMobile
+    ? { resolution: 256, dropRadius: 15, perturbance: 0.03, interactive: true }
+    : { resolution: 128, dropRadius: 20, perturbance: 0.02, interactive: true };
+
+  // Iniciar efecto ripple
+  $fondo.ripples(rippleOptions);
 
   let fadeTimer;
 
   function activarMovimiento() {
     clearTimeout(fadeTimer);
-    $fondo.ripples('set', 'perturbance', 0.015);
+    $fondo.ripples('set', 'perturbance', rippleOptions.perturbance);
 
     fadeTimer = setTimeout(() => {
       let steps = 14;
@@ -24,8 +27,9 @@ $(document).ready(function () {
       let actual = 0;
 
       const fade = setInterval(() => {
-        let value = 0.015 - (0.015 / steps) * actual;
-        $fondo.ripples('set', 'perturbance', Math.max(0, value));
+        // Nunca baja a 0 → mantiene micro-movimiento
+        let value = rippleOptions.perturbance - (rippleOptions.perturbance / steps) * actual;
+        $fondo.ripples('set', 'perturbance', Math.max(isMobile ? 0.005 : 0.0025, value));
         actual++;
         if (actual > steps) clearInterval(fade);
       }, interval);
@@ -46,6 +50,7 @@ $(document).ready(function () {
         return pool.pop();
       }
 
+      // Click → aparece imagen
       $fondo.on("click", function (e) {
         activarMovimiento();
         const nextFoto = siguienteFoto();
@@ -59,8 +64,10 @@ $(document).ready(function () {
         $contenedor.append(img);
       });
 
+      // Movimiento activa el ripple
       $fondo.on("mousemove", activarMovimiento);
 
+      // Botón borrar recuerdos
       $("#borrar-recuerdos").on("click", function () {
         $(".recuerdo-img").each(function () {
           const $img = $(this);
@@ -72,6 +79,7 @@ $(document).ready(function () {
     })
     .catch(err => console.error("Error al cargar las fotos:", err));
 });
+
 
 
 
